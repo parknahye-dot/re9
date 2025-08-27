@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Canvas Drawing Tool</title>
+  <script type="module" src="/src/main.js"></script>
+</head>
+
+<body class="flex flex-col items-center bg-gray-100 min-h-screen">
+  <h1 class="text-2xl font-bold mt-4 mb-2">🎨 Web Drawing Tool</h1>
+
+  <!-- 컨트롤 영역 -->
+  <div class="flex gap-4 mb-4 flex-wrap justify-center">
+    <input type="color" id="colorPicker" value="#000000" class="w-12 h-12 border rounded" />
+    <input type="range" id="brushSize" min="1" max="50" value="5" class="w-40" />
+
+    <select id="toolSelect" class="border rounded p-2">
+      <option value="pen">펜</option>
+      <option value="eraser">지우개</option>
+      <option value="line">직선</option>
+      <option value="rect">사각형</option>
+      <option value="circle">원</option>
+    </select>
+
+    <!-- ✅ 모눈종이 체크박스 -->
+    <label class="flex items-center gap-2">
+      <input type="checkbox" id="gridToggle" class="w-5 h-5" />
+      모눈 종이
+    </label>
+
+    <button id="clearBtn" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">Clear</button>
+    <button id="savePngBtn" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Save PNG</button>
+    <button id="saveJpgBtn" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">Save JPG</button>
+  </div>
+
+  <!-- 전체화면 캔버스 -->
+  <canvas id="drawingCanvas" class="bg-white shadow-lg rounded"></canvas>
+</body>
+
+</html>
