@@ -272,9 +272,7 @@ Repository 이름 → my-app
     push: true
     tags: ${{ secrets.DOCKERHUB_USERNAME }}/my-app:latest
 
+![alt text](image.png)
 
-👉 정리하면:
-
-토큰을 Read & Write 권한으로 새로 만들고,
-
-tags 가 본인 Docker Hub 저장소와 일치하는지 확인하세요.
+## 같은 방법으로 nginx image 이용 Dockerfile 생성 및 빌드 한 순수 html 소스위주로 docker hub 에 반영
+![alt text](image-1.png)
