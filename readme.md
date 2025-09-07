@@ -1,4 +1,6 @@
-vite, vanilla js , tailwind , canvas 기반으로 웹 드로잉 툴 제적
+## 0908
+
+vite, vanilla js , tailwind , canvas 기반으로 웹 드로잉 툴 제작
 ChatGPT의 말:
 
 좋습니다 👍 Vite + Vanilla JS + Tailwind + Canvas 기반으로 간단한 웹 드로잉 툴 예제를 만들어드릴게요.
