@@ -483,3 +483,24 @@ document.getElementById("saveJpgBtn").addEventListener("click", () => saveCanvas
 체크 해제 시 일반 흰색 배경
 
 Clear 버튼 누를 때도 배경 유지(모눈/화이트)
+
+
+##
+
+   2 git fetch
+   3 git pull
+   4 npm install
+   5 npm run dev
+   6 docker
+   7 docker build -t re9 .
+   8 docker ps -a
+   9 docker image ls
+  10 docker logout
+  11 docker login
+  12 docker build -t re9 .
+  13 docker imgae ls
+  14 docker image ls
+  15 docker run -d -p 3000:3000 --name my-app-container my-app
+  16 docker run -d -p 3000:3000 --name 5dd66b4a88c9 canvas
+  17 docker run -d -p 3000:3000 --name re9
+  18 docker run -d -p 3000:3000 --name canvae re9
