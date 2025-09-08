@@ -484,10 +484,8 @@ document.getElementById("saveJpgBtn").addEventListener("click", () => saveCanvas
 
 Clear 버튼 누를 때도 배경 유지(모눈/화이트)
 
-
-##
-
-   2 git fetch
+## 
+2 git fetch
    3 git pull
    4 npm install
    5 npm run dev
@@ -504,3 +502,9 @@ Clear 버튼 누를 때도 배경 유지(모눈/화이트)
   16 docker run -d -p 3000:3000 --name 5dd66b4a88c9 canvas
   17 docker run -d -p 3000:3000 --name re9
   18 docker run -d -p 3000:3000 --name canvae re9
+  19 history
+  20 npm run build
+  21 # 이미지 빌드
+  22 docker build -t vite-nginx .
+  23 # 컨테이너 실행 (포트 8080 노출)
+  24 docker run -d -p 8080:80 vite-nginx
