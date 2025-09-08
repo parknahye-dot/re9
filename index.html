@@ -4,38 +4,250 @@
 <head>
   <meta charset="UTF-8" />
   <title>Canvas Drawing Tool</title>
-  <script type="module" src="/src/main.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    .container {
+      display: flex;
+      height: 100vh;
+    }
+
+    .sidebar {
+      width: 250px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 20px;
+      box-shadow: 2px 0 15px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      overflow-y: auto;
+    }
+
+    .canvas-area {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+    }
+
+    h1 {
+      font-size: 20px;
+      color: #333;
+      text-align: center;
+      margin-bottom: 20px;
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .control-group label {
+      font-weight: 600;
+      color: #333;
+      font-size: 13px;
+    }
+
+    .color-picker {
+      width: 50px;
+      height: 50px;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transition: transform 0.2s ease;
+    }
+
+    .color-picker:hover {
+      transform: scale(1.1);
+    }
+
+    .slider {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: linear-gradient(to right, #ddd, #667eea);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .slider::-webkit-slider-thumb {
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #667eea;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    select {
+      padding: 10px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      background: white;
+      font-size: 13px;
+      cursor: pointer;
+      transition: border-color 0.3s ease;
+    }
+
+    select:focus {
+      border-color: #667eea;
+      outline: none;
+    }
+
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px;
+      background: rgba(102, 126, 234, 0.1);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .checkbox-container:hover {
+      background: rgba(102, 126, 234, 0.2);
+    }
+
+    .checkbox-container input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    .button {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .button.clear {
+      background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+      color: white;
+    }
+
+    .button.save-png {
+      background: linear-gradient(45deg, #4ecdc4, #44a08d);
+      color: white;
+    }
+
+    .button.save-jpg {
+      background: linear-gradient(45deg, #45b7d1, #2196f3);
+      color: white;
+    }
+
+    .brush-size-display {
+      text-align: center;
+      font-weight: 600;
+      color: #667eea;
+      font-size: 14px;
+    }
+
+    .canvas-container {
+      position: relative;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      max-width: calc(100vw - 270px);
+      max-height: calc(100vh - 20px);
+    }
+
+    #drawingCanvas {
+      background: white;
+      border-radius: 12px;
+      cursor: crosshair;
+      display: block;
+    }
+
+    #gridCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      border-radius: 12px;
+    }
+  </style>
 </head>
 
-<body class="flex flex-col items-center bg-gray-100 min-h-screen">
-  <h1 class="text-2xl font-bold mt-4 mb-2">🎨 Web Drawing Tool</h1>
+<body>
+  <div class="container">
+    <!-- 사이드바 -->
+    <div class="sidebar">
+      <h1>🎨 Drawing Tool</h1>
+      
+      <div class="control-group">
+        <label>색상 선택</label>
+        <input type="color" id="colorPicker" value="#000000" class="color-picker" />
+      </div>
 
-  <!-- 컨트롤 영역 -->
-  <div class="flex gap-4 mb-4 flex-wrap justify-center">
-    <input type="color" id="colorPicker" value="#000000" class="w-12 h-12 border rounded" />
-    <input type="range" id="brushSize" min="1" max="50" value="5" class="w-40" />
+      <div class="control-group">
+        <label>브러시 크기</label>
+        <input type="range" id="brushSize" min="1" max="50" value="5" class="slider" />
+        <div id="brushSizeDisplay" class="brush-size-display">5px</div>
+      </div>
 
-    <select id="toolSelect" class="border rounded p-2">
-      <option value="pen">펜</option>
-      <option value="eraser">지우개</option>
-      <option value="line">직선</option>
-      <option value="rect">사각형</option>
-      <option value="circle">원</option>
-    </select>
+      <div class="control-group">
+        <label>도구 선택</label>
+        <select id="toolSelect">
+          <option value="pen">🖊️ 펜</option>
+          <option value="eraser">🧹 지우개</option>
+          <option value="line">📏 직선</option>
+          <option value="rect">⬜ 사각형</option>
+          <option value="circle">⭕ 원</option>
+        </select>
+      </div>
 
-    <!-- ✅ 모눈종이 체크박스 -->
-    <label class="flex items-center gap-2">
-      <input type="checkbox" id="gridToggle" class="w-5 h-5" />
-      모눈 종이
-    </label>
+      <div class="checkbox-container">
+        <input type="checkbox" id="gridToggle" />
+        <label for="gridToggle">📐 모눈 종이</label>
+      </div>
 
-    <button id="clearBtn" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">Clear</button>
-    <button id="savePngBtn" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Save PNG</button>
-    <button id="saveJpgBtn" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">Save JPG</button>
+      <div style="margin-top: auto; display: flex; flex-direction: column; gap: 8px;">
+        <button id="clearBtn" class="button clear">🗑️ 전체 지우기</button>
+        <button id="savePngBtn" class="button save-png">💾 PNG 저장</button>
+        <button id="saveJpgBtn" class="button save-jpg">📷 JPG 저장</button>
+      </div>
+    </div>
+
+    <!-- 캔버스 영역 -->
+    <div class="canvas-area">
+      <div class="canvas-container">
+        <canvas id="drawingCanvas"></canvas>
+        <canvas id="gridCanvas"></canvas>
+      </div>
+    </div>
   </div>
 
-  <!-- 전체화면 캔버스 -->
-  <canvas id="drawingCanvas" class="bg-white shadow-lg rounded"></canvas>
+  <!-- JavaScript 파일 로드 -->
+  <script src="main.js"></script>
 </body>
 
 </html>
