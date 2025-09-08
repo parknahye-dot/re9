@@ -75,6 +75,8 @@ drawCanvas.addEventListener("mousedown", (e) => {
   startX = e.offsetX;
   startY = e.offsetY;
 
+  console.log(" startX -- " + startX);
+
   if (currentTool === "pen" || currentTool === "eraser") {
     drawCtx.beginPath();
     drawCtx.moveTo(startX, startY);
