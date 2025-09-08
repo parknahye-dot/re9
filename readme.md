@@ -7,7 +7,7 @@ ChatGPT의 말:
 이 예제는 기본적인 자유곡선 드로잉, 색상 선택, 브러시 두께 조절, 캔버스 초기화 기능을 포함합니다.
 
 1. 프로젝트 초기화
-# Vite 프로젝트 생성a
+# Vite 프로젝트 생성
 npm create vite@latest drawing-tool -- --template vanilla
 
 cd drawing-tool
