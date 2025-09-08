@@ -7,6 +7,8 @@ COPY dist/ /usr/share/nginx/html
 # 3단계: 커스텀 nginx 설정이 있다면 교체
 # (옵션) 로컬 nginx.conf 파일이 있다면 복사
 # COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 
 # 4단계: Nginx는 기본적으로 80 포트 사용
 EXPOSE 80
