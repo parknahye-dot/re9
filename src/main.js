@@ -1,129 +1,158 @@
-const canvas = document.getElementById("drawingCanvas");
-const ctx = canvas.getContext("2d");
-const gridToggle = document.getElementById("gridToggle");
+// 🎨 main.js
 
+// 캔버스 참조
+const bgCanvas = document.getElementById("backgroundCanvas");
+const bgCtx = bgCanvas.getContext("2d");
+const drawCanvas = document.getElementById("drawingCanvas");
+const drawCtx = drawCanvas.getContext("2d");
+
+// 컨트롤 요소
+const gridToggle = document.getElementById("gridToggle");
+const colorPicker = document.getElementById("colorPicker");
+const brushSizeInput = document.getElementById("brushSize");
+const toolSelect = document.getElementById("toolSelect");
+
+// 상태 변수
 let drawing = false;
 let startX, startY;
-let brushColor = document.getElementById("colorPicker").value;
-let brushSize = document.getElementById("brushSize").value;
+let brushColor = colorPicker.value;
+let brushSize = brushSizeInput.value;
 let currentTool = "pen";
-let useGrid = false; // ✅ 모눈종이 여부
+let useGrid = false;
 
-// 🔹 전체 화면 사이즈로 캔버스 자동 설정
+// 🔹 캔버스 크기 자동 조정
 function resizeCanvas() {
-  canvas.width = window.innerWidth - 40;
-  canvas.height = window.innerHeight - 150;
+  const width = window.innerWidth - 40;
+  const height = window.innerHeight - 150;
+
+  bgCanvas.width = drawCanvas.width = width;
+  bgCanvas.height = drawCanvas.height = height;
+
+
+  console.log(" width -- " + width);
+  console.log(" bgCanvas.height -- " + bgCanvas.height);
+
   redrawBackground();
 }
 window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 
-// 🔹 모눈종이 그리기 함수
+// 🔹 모눈종이 그리기
 function drawGrid(spacing = 25) {
-  ctx.strokeStyle = "#e0e0e0";
-  ctx.lineWidth = 1;
-  for (let x = 0; x < canvas.width; x += spacing) {
-    ctx.beginPath();
-    ctx.moveTo(x, 0);
-    ctx.lineTo(x, canvas.height);
-    ctx.stroke();
+  bgCtx.strokeStyle = "#e0e0e0";
+  bgCtx.lineWidth = 1;
+
+  for (let x = 0; x < bgCanvas.width; x += spacing) {
+    bgCtx.beginPath();
+    bgCtx.moveTo(x, 0);
+    bgCtx.lineTo(x, bgCanvas.height);
+    bgCtx.stroke();
   }
-  for (let y = 0; y < canvas.height; y += spacing) {
-    ctx.beginPath();
-    ctx.moveTo(0, y);
-    ctx.lineTo(canvas.width, y);
-    ctx.stroke();
+  for (let y = 0; y < bgCanvas.height; y += spacing) {
+    bgCtx.beginPath();
+    bgCtx.moveTo(0, y);
+    bgCtx.lineTo(bgCanvas.width, y);
+    bgCtx.stroke();
   }
 }
 
-// 🔹 배경 다시 그리기 (모눈 종이 적용/해제 포함)
+// 🔹 배경 다시 그리기
 function redrawBackground() {
-  ctx.fillStyle = "#ffffff";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  bgCtx.fillStyle = "#ffffff";
+  bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
   if (useGrid) drawGrid();
 }
 
-// ✅ 모눈종이 체크박스 이벤트
+// ✅ 모눈종이 토글 이벤트
 gridToggle.addEventListener("change", (e) => {
   useGrid = e.target.checked;
   redrawBackground();
 });
 
-// 🖊 드로잉
-canvas.addEventListener("mousedown", (e) => {
+// 🖊 드로잉 이벤트
+drawCanvas.addEventListener("mousedown", (e) => {
   drawing = true;
   startX = e.offsetX;
   startY = e.offsetY;
 
   if (currentTool === "pen" || currentTool === "eraser") {
-    ctx.beginPath();
-    ctx.moveTo(startX, startY);
+    drawCtx.beginPath();
+    drawCtx.moveTo(startX, startY);
   }
 });
 
-canvas.addEventListener("mousemove", (e) => {
+drawCanvas.addEventListener("mousemove", (e) => {
   if (!drawing) return;
 
   if (currentTool === "pen" || currentTool === "eraser") {
-    ctx.lineWidth = brushSize;
-    ctx.lineCap = "round";
-    ctx.strokeStyle = currentTool === "eraser" ? "#ffffff" : brushColor;
-    ctx.lineTo(e.offsetX, e.offsetY);
-    ctx.stroke();
+    drawCtx.lineWidth = brushSize;
+    drawCtx.lineCap = "round";
+    drawCtx.strokeStyle = currentTool === "eraser" ? "#ffffff" : brushColor;
+    drawCtx.lineTo(e.offsetX, e.offsetY);
+    drawCtx.stroke();
   }
 });
 
-canvas.addEventListener("mouseup", (e) => {
+drawCanvas.addEventListener("mouseup", (e) => {
   if (!drawing) return;
   drawing = false;
 
   const endX = e.offsetX;
   const endY = e.offsetY;
 
-  ctx.lineWidth = brushSize;
-  ctx.strokeStyle = brushColor;
-  ctx.fillStyle = brushColor;
+  drawCtx.lineWidth = brushSize;
+  drawCtx.strokeStyle = brushColor;
+  drawCtx.fillStyle = brushColor;
 
   if (currentTool === "line") {
-    ctx.beginPath();
-    ctx.moveTo(startX, startY);
-    ctx.lineTo(endX, endY);
-    ctx.stroke();
+    drawCtx.beginPath();
+    drawCtx.moveTo(startX, startY);
+    drawCtx.lineTo(endX, endY);
+    drawCtx.stroke();
   } else if (currentTool === "rect") {
-    ctx.strokeRect(startX, startY, endX - startX, endY - startY);
+    drawCtx.strokeRect(startX, startY, endX - startX, endY - startY);
   } else if (currentTool === "circle") {
     const radius = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
-    ctx.beginPath();
-    ctx.arc(startX, startY, radius, 0, Math.PI * 2);
-    ctx.stroke();
+    drawCtx.beginPath();
+    drawCtx.arc(startX, startY, radius, 0, Math.PI * 2);
+    drawCtx.stroke();
   }
 });
 
 // 색상 선택
-document.getElementById("colorPicker").addEventListener("input", (e) => {
+colorPicker.addEventListener("input", (e) => {
   brushColor = e.target.value;
 });
 
-// 브러시 크기 변경
-document.getElementById("brushSize").addEventListener("input", (e) => {
+// 브러시 크기 선택
+brushSizeInput.addEventListener("input", (e) => {
   brushSize = e.target.value;
 });
 
 // 도구 선택
-document.getElementById("toolSelect").addEventListener("change", (e) => {
+toolSelect.addEventListener("change", (e) => {
   currentTool = e.target.value;
 });
 
-// Clear 버튼
+// Clear 버튼 (드로잉만 초기화, 배경 유지)
 document.getElementById("clearBtn").addEventListener("click", () => {
-  redrawBackground();
+  drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
 });
 
-// 이미지 저장 (PNG/JPG)
+// 이미지 저장 (PNG/JPG) → 배경 + 드로잉 합쳐서 저장
 function saveCanvas(type = "png") {
+  // 임시 캔버스에 두 레이어 합치기
+  const tempCanvas = document.createElement("canvas");
+  const tempCtx = tempCanvas.getContext("2d");
+  tempCanvas.width = bgCanvas.width;
+  tempCanvas.height = bgCanvas.height;
+
+  tempCtx.drawImage(bgCanvas, 0, 0);
+  tempCtx.drawImage(drawCanvas, 0, 0);
+
   const link = document.createElement("a");
   link.download = `drawing.${type}`;
-  link.href = canvas.toDataURL(`image/${type}`);
+  link.href = tempCanvas.toDataURL(`image/${type}`);
   link.click();
 }
 document.getElementById("savePngBtn").addEventListener("click", () => saveCanvas("png"));
